@@ -9,9 +9,9 @@ import {parseCitibankCreditStatement} from './parsers/citibank.credit'
 import {extractTextChunksFromPDF} from './utils/extractTextChunksFromPDF'
 import {parseKasikornBankStatement} from './parsers/kasikorn.statement'
 
-const bankType = ['kasikorn', 'ktc', 'citibank'] as const
+const bankTypes = ['kasikorn', 'ktc', 'citibank'] as const
 
-export type Bank = (typeof bankType)[number]
+export type Bank = (typeof bankTypes)[number]
 
 export type StatementType = 'credit' | 'account'
 
@@ -25,9 +25,17 @@ const findStatementType = (s: string): StatementType => {
 }
 
 const findBankType = (s: string): Bank => {
-  for (const bank of bankType) {
-    if (s.toLowerCase().includes(bank)) return bank
-  }
+  const lowerString = s.toLowerCase()
+
+  const foundIndexes = bankTypes.map(bank => {
+    const idx = lowerString.indexOf(bank)
+    return idx >= 0 ? idx : 1_000_000
+  })
+
+  const minIdx = Math.min(...foundIndexes)
+  const bankIdx = foundIndexes.indexOf(minIdx)
+  const foundBank = bankTypes[bankIdx]
+  return foundBank
 }
 
 export async function parseStatement(
