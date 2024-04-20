@@ -84,7 +84,7 @@ export default function Home() {
     await Promise.all(
       files.map(async (file) => {
         const transactions = (await processStatementFile(file)).sort(
-          (txa, txb) => +txb.paymentDate - +txa.paymentDate
+          (txa, txb) => +(txb?.paymentDate || 0) - +(txa?.paymentDate || 0)
         )
 
         const billName = file.name
@@ -277,7 +277,7 @@ export default function Home() {
                     >
                       {formatNumber(
                         selectedStatement()?.txs?.reduce(
-                          (acc, cur) => acc + cur.amount,
+                          (acc, cur) => acc + cur?.amount || 0,
                           0
                         )
                       )}
