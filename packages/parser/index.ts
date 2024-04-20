@@ -27,14 +27,16 @@ const findStatementType = (s: string): StatementType => {
 const findBankType = (s: string): Bank => {
   const lowerString = s.toLowerCase()
 
-  const foundIndexes = bankTypes.map(bank => {
+  const foundBankIndexes = bankTypes.map(bank => {
     const idx = lowerString.indexOf(bank)
     return idx >= 0 ? idx : 1_000_000
   })
 
-  const minIdx = Math.min(...foundIndexes)
-  const bankIdx = foundIndexes.indexOf(minIdx)
+  const minimumFoundBankIdx = Math.min(...foundBankIndexes)
+
+  const bankIdx = foundBankIndexes.indexOf(minimumFoundBankIdx)
   const foundBank = bankTypes[bankIdx]
+
   return foundBank
 }
 
